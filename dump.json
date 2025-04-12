@@ -1,0 +1,149 @@
+[
+  {
+    "id": "QF001",
+    "title": "Software Engineer",
+    "description": "A software engineer designs, develops, and maintains software systems and applications.",
+    "skills": [
+      {
+        "name": "Programming",
+        "description": "Ability to write clean, efficient, and maintainable code in various programming languages."
+      },
+      {
+        "name": "Problem Solving",
+        "description": "Ability to analyze complex problems and develop effective solutions."
+      },
+      {
+        "name": "Version Control",
+        "description": "Proficiency in using Git or other version control systems."
+      }
+    ],
+    "requirements": {
+      "education": "Bachelor's degree in Computer Science or related field",
+      "experience": "2+ years of software development experience",
+      "certifications": ["Optional: AWS Certified Developer", "Optional: Microsoft Certified Developer"]
+    },
+    "jobs": [
+      {
+        "title": "Frontend Developer",
+        "description": "Focuses on building user interfaces and client-side functionality.",
+        "salary_range": {
+          "min": 70000,
+          "max": 120000,
+          "currency": "USD"
+        }
+      },
+      {
+        "title": "Backend Developer",
+        "description": "Focuses on server-side logic, databases, and application architecture.",
+        "salary_range": {
+          "min": 80000,
+          "max": 130000,
+          "currency": "USD"
+        }
+      }
+    ],
+    "training_resources": [
+      "Codecademy Pro",
+      "Udemy Software Engineering Courses",
+      "LeetCode Premium"
+    ]
+  },
+  {
+    "id": "QF002",
+    "title": "Data Scientist",
+    "description": "A data scientist extracts insights from complex data using statistical analysis, machine learning, and data visualization.",
+    "skills": [
+      {
+        "name": "Statistical Analysis",
+        "description": "Ability to apply statistical methods to analyze data and draw conclusions."
+      },
+      {
+        "name": "Machine Learning",
+        "description": "Knowledge of machine learning algorithms and their applications."
+      },
+      {
+        "name": "Data Visualization",
+        "description": "Ability to create clear, informative visualizations to communicate findings."
+      }
+    ],
+    "requirements": {
+      "education": "Master's degree or PhD in Statistics, Computer Science, or related field",
+      "experience": "3+ years of experience in data analysis or related role",
+      "certifications": ["Optional: TensorFlow Developer Certificate", "Optional: IBM Data Science Professional Certificate"]
+    },
+    "jobs": [
+      {
+        "title": "Machine Learning Engineer",
+        "description": "Builds and deploys machine learning models in production environments.",
+        "salary_range": {
+          "min": 90000,
+          "max": 150000,
+          "currency": "USD"
+        }
+      },
+      {
+        "title": "Data Analyst",
+        "description": "Analyzes data to provide actionable insights for business decisions.",
+        "salary_range": {
+          "min": 65000,
+          "max": 110000,
+          "currency": "USD"
+        }
+      }
+    ],
+    "training_resources": [
+      "Coursera Data Science Specialization",
+      "DataCamp Subscription",
+      "Kaggle Competitions"
+    ]
+  },
+  {
+    "id": "QF003",
+    "title": "Network Administrator",
+    "description": "A network administrator is responsible for maintaining computer networks and resolving issues with them.",
+    "skills": [
+      {
+        "name": "Network Configuration",
+        "description": "Ability to set up and configure network equipment and infrastructure."
+      },
+      {
+        "name": "Troubleshooting",
+        "description": "Ability to diagnose and resolve network issues quickly and effectively."
+      },
+      {
+        "name": "Security Management",
+        "description": "Knowledge of network security protocols and best practices."
+      }
+    ],
+    "requirements": {
+      "education": "Bachelor's degree in IT, Computer Science, or related field",
+      "experience": "2+ years of experience in network administration",
+      "certifications": ["CompTIA Network+", "Cisco CCNA", "Optional: CISSP"]
+    },
+    "jobs": [
+      {
+        "title": "Network Security Specialist",
+        "description": "Focuses on protecting network infrastructure from security threats.",
+        "salary_range": {
+          "min": 75000,
+          "max": 125000,
+          "currency": "USD"
+        }
+      },
+      {
+        "title": "System Administrator",
+        "description": "Manages and maintains computer systems and servers.",
+        "salary_range": {
+          "min": 65000,
+          "max": 110000,
+          "currency": "USD"
+        }
+      }
+    ],
+    "training_resources": [
+      "CompTIA Network+ Certification Training",
+      "Cisco Networking Academy",
+      "Pluralsight IT Operations Courses"
+    ]
+  }
+]

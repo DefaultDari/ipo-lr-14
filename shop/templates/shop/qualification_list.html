@@ -1,0 +1,45 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Список квалификаций{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <h1 class="display-5">Список квалификаций</h1>
+        <p class="lead">Просмотр всех доступных квалификаций</p>
+    </div>
+</div>
+
+{% if qualifications %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-4">
+        {% for qualification in qualifications %}
+        <div class="col">
+            <div class="card h-100 position-relative">
+                <div class="card-body">
+                    <h5 class="card-title">{{ qualification.title }}</h5>
+                    <p class="card-text text-muted">ID: {{ qualification.id }}</p>
+                    <p class="card-text">
+                        {% if qualification.description and qualification.description|length > 100 %}
+                            {{ qualification.description|slice:":100" }}...
+                        {% elif qualification.description %}
+                            {{ qualification.description }}
+                        {% else %}
+                            <span class="text-muted">Описание отсутствует</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{% url 'qualification_detail' qualification.id %}" class="btn btn-outline-info">
+                        Подробнее <i class="fas fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i> Квалификации не найдены. Проверьте, правильно ли загружен файл данных.
+    </div>
+{% endif %}
+{% endblock %}
