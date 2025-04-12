@@ -1,0 +1,154 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Детский мир - Магазин игрушек{% endblock %}
+
+{% block content %}
+<!-- Главный баннер -->
+<div class="row justify-content-center mb-5">
+    <div class="col-md-10">
+        <div class="card bg-primary text-white">
+            <div class="card-body p-5 text-center">
+                <h1 class="display-4 mb-3">Funtastic - Магазин игрушек</h1>
+                <p class="lead">Подарите радость вашему ребенку с нашими качественными и развивающими игрушками</p>
+                <div class="mt-4">
+                    <a href="{% url 'store' %}" class="btn btn-light btn-lg px-4">
+                        <i class="fas fa-shopping-cart me-2"></i>Перейти в магазин
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Популярные категории -->
+<div class="row mb-5">
+    <div class="col-12 mb-4">
+        <h2 class="text-center">Популярные категории игрушек</h2>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="fas fa-robot fa-4x mb-3 text-primary"></i>
+                <h4>Роботы</h4>
+                <p>Интерактивные игрушки для развития технического мышления</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="fas fa-cubes fa-4x mb-3 text-success"></i>
+                <h4>Конструкторы</h4>
+                <p>Развивающие конструкторы для всех возрастов</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="fas fa-chess fa-4x mb-3 text-info"></i>
+                <h4>Настольные игры</h4>
+                <p>Увлекательные игры для семейного досуга</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="card h-100 text-center">
+            <div class="card-body">
+                <i class="fas fa-paw fa-4x mb-3 text-warning"></i>
+                <h4>Мягкие игрушки</h4>
+                <p>Милые плюшевые друзья для ваших малышей</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Преимущества магазина -->
+<div class="row mb-5">
+    <div class="col-12 mb-4">
+        <h2 class="text-center">Почему выбирают нас</h2>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-check-circle fa-3x mb-3 text-success"></i>
+                <h4>Качество</h4>
+                <p>Мы предлагаем только сертифицированные и безопасные игрушки от проверенных производителей</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-truck fa-3x mb-3 text-primary"></i>
+                <h4>Доставка</h4>
+                <p>Быстрая доставка по всей стране. Бесплатная доставка при заказе от 50 BYN</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <i class="fas fa-undo fa-3x mb-3 text-danger"></i>
+                <h4>Возврат</h4>
+                <p>Гарантия возврата в течение 14 дней, если товар не подошел</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ссылки на другие страницы -->
+<div class="row justify-content-center mt-4">
+    <div class="col-md-10">
+        <div class="card bg-dark">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="mb-2">Узнайте больше о нашем магазине</h3>
+                        <p class="mb-md-0">Информация о нашем магазине, ассортименте и услугах</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <a href="{% url 'store' %}" class="btn btn-outline-light">Подробнее о магазине</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-10">
+        <div class="card bg-secondary">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="mb-2">Информация о разработчике</h3>
+                        <p class="mb-md-0">Узнайте больше об авторе этого проекта</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <a href="{% url 'about' %}" class="btn btn-outline-light">Об авторе</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center mt-4">
+    <div class="col-md-10">
+        <div class="card bg-info text-dark">
+            <div class="card-body p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h3 class="mb-2">Список профессиональных квалификаций</h3>
+                        <p class="mb-md-0">Ознакомьтесь с перечнем квалификаций и требуемыми навыками</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <a href="{% url 'qualification_list' %}" class="btn btn-dark">Смотреть квалификации</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

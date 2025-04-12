@@ -1,0 +1,110 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Квалификация: {{ qualification.title }}{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'qualification_list' %}">Все Квалификации</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ qualification.title }}</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-primary bg-opacity-25">
+        <div class="d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">{{ qualification.title }}</h2>
+            <span class="badge bg-primary">ID: {{ qualification.id }}</span>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if qualification.description %}
+            <div class="mb-4">
+                <h4>Описание</h4>
+                <p>{{ qualification.description }}</p>
+            </div>
+        {% endif %}
+
+        {% if qualification.skills %}
+            <div class="mb-4">
+                <h4>Навыки</h4>
+                <ul class="list-group list-group-flush">
+                    {% for skill in qualification.skills %}
+                        <li class="list-group-item bg-transparent">
+                            <strong>{{ skill.name }}</strong>
+                            {% if skill.description %}
+                                <p class="mb-0 text-muted">{{ skill.description }}</p>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        {% if qualification.requirements %}
+            <div class="mb-4">
+                <h4>Требования</h4>
+                <div class="card bg-dark">
+                    <div class="card-body">
+                        <pre class="mb-0"><code>{{ qualification.requirements.education }}</code></pre>
+                        <pre class="mb-0"><code>{{ qualification.requirements.experience }}</code></pre>
+                        <pre class="mb-0"><code>{{ qualification.requirements.certifications }}</code></pre>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if qualification.jobs %}
+            <div class="mb-4">
+                <h4>Связанные вакансии</h4>
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    {% for job in qualification.jobs %}
+                        <div class="col">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ job.title }}</h5>
+                                    {% if job.description %}
+                                        <p class="card-text">{{ job.description }}</p>
+                                    {% endif %}
+                                    {% if job.salary_range %}
+                                        <p class="card-text">
+                                            <strong>Диапазон зарплаты:</strong> {{ job.salary_range.min }} - {{ job.salary_range.max }} {{ job.salary_range.currency }}
+                                        </p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Отображение всех остальных свойств в виде таблицы -->
+        {% load tz %}
+        <div class="mb-4">
+            <h4>Дополнительная информация</h4>
+            <table class="table table-striped">
+                <tbody>
+                    {% for key, value in qualification.items %}
+                        {% if key != 'id' and key != 'title' and key != 'description' and key != 'skills' and key != 'requirements' and key != 'jobs' %}
+                            <tr>
+                                <th scope="row" style="width: 30%">{{ key|title }}</th>
+                                <td>
+                                    {{ value }}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-center">
+        <a href="{% url 'qualification_list' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i> Назад к списку квалификаций
+        </a>
+    </div>
+</div>
+{% endblock %}

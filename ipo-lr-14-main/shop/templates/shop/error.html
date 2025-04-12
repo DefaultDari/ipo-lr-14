@@ -1,0 +1,23 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Ошибка{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card text-center shadow-sm">
+            <div class="card-header bg-danger bg-opacity-25">
+                <h2 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i> Ошибка</h2>
+            </div>
+            <div class="card-body py-5">
+                <p class="lead">{{ message }}</p>
+                <div class="mt-4">
+                    <a href="{% url 'qualification_list' %}" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i> Вернуться на главную
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

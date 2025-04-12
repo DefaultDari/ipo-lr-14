@@ -1,0 +1,67 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Магазин игрушек{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-primary bg-opacity-25">
+                <h2 class="mb-0">Funtastic - Магазин игрушек для детей</h2>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-4">
+                    <i class="fas fa-gift fa-6x text-primary mb-3"></i>
+                    <h3 class="mb-3">"Funtastic"</h3>
+                    <p class="lead">Все для счастливого детства!</p>
+                </div>
+                
+                <hr class="my-4">
+                
+                <h4 class="mb-3">О нашем магазине</h4>
+                <p>Наш магазин предлагает широкий ассортимент развивающих и образовательных игрушек для детей всех возрастов. Мы специализируемся на качественных товарах, которые помогают детям учиться и развиваться через игру.</p>
+                
+                
+                <h4 class="mb-3">Контакты</h4>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="fas fa-map-marker-alt me-2"></i>
+                            Адрес
+                        </span>
+                        <span>г. Минск, ул. Примерная, 123</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="fas fa-phone me-2"></i>
+                            Телефон
+                        </span>
+                        <span>+375 (29) 123-45-67</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            <i class="fas fa-envelope me-2"></i>
+                            Email
+                        </span>
+                        <span>info@toystore.example.com</span>
+                    </li>
+                </ul>
+                
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{% url 'home' %}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i>На главную
+                    </a>
+                    <a href="https://www.funtastik.by/" class="btn btn-primary" target="_blank">
+                        Посетить официальный сайт<i class="fas fa-external-link-alt ms-2"></i>
+                    </a>
+                </div>
+                <div class="mt-3 text-center">
+                    <a href="{% url 'qualification_list' %}" class="btn btn-link">
+                        Перейти к квалификациям<i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
