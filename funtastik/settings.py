@@ -11,7 +11,14 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-change-me-in-p
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+# Настройки почты
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'  # Пример для Yandex
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your_email@yandex.ru'
+EMAIL_HOST_PASSWORD = 'your_password'
+DEFAULT_FROM_EMAIL = 'your_email@yandex.ru'
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',

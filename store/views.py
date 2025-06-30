@@ -10,7 +10,18 @@ from .models import Product, Category, Manufacturer, Cart, CartItem
 import json
 from django.http import Http404
 from pathlib import Path
-
+import os
+import logging
+from io import BytesIO
+from django.conf import settings
+from django.core.mail import send_mail
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from openpyxl import Workbook
+from openpyxl.styles import Font, Alignment
+from .models import Cart, Order, OrderItem
 
 
 def load_specialties():
@@ -252,3 +263,114 @@ def register(request):
         form = UserCreationForm()
     
     return render(request, 'registration/register.html', {'form': form})
+logger = logging.getLogger(__name__)
+
+@login_required
+def checkout(request):
+    """Оформление заказа"""
+    cart = Cart.objects.get(пользователь=request.user)
+    
+    if request.method == 'POST':
+        try:
+            # Создаем заказ
+            order = Order.objects.create(
+                пользователь=request.user,
+                общая_стоимость=cart.общая_стоимость(),
+                адрес_доставки=request.POST.get('address'),
+                email=request.POST.get('email'),
+                телефон=request.POST.get('phone')
+            )
+            
+            # Создаем элементы заказа
+            for item in cart.cartitem_set.all():
+                OrderItem.objects.create(
+                    заказ=order,
+                    товар=item.товар,
+                    количество=item.количество,
+                    цена=item.товар.цена
+                )
+                # Уменьшаем количество товара на складе
+                product = item.товар
+                product.количество_на_складе -= item.количество
+                product.save()
+            
+            # Генерируем чек в Excel
+            excel_file = generate_excel_receipt(order)
+            
+            # Отправляем email с чеком
+            send_receipt_email(order, excel_file)
+            
+            # Очищаем корзину
+            cart.cartitem_set.all().delete()
+            
+            messages.success(request, 'Заказ успешно оформлен! Чек отправлен на вашу почту.')
+            return redirect('index')
+        
+        except Exception as e:
+            logger.error(f"Ошибка при оформлении заказа: {str(e)}")
+            messages.error(request, f'Ошибка при оформлении заказа: {str(e)}')
+            return redirect('cart')
+    
+    return render(request, 'store/checkout.html', {'cart': cart})
+
+def generate_excel_receipt(order):
+    """Генерация чека в формате Excel"""
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Чек заказа"
+    
+    # Заголовки
+    headers = ["Товар", "Количество", "Цена за шт.", "Сумма"]
+    ws.append(headers)
+    
+    # Стиль для заголовков
+    bold_font = Font(bold=True)
+    for cell in ws[1]:
+        cell.font = bold_font
+    
+    # Данные заказа
+    for item in order.orderitem_set.all():
+        ws.append([
+            item.товар.название,
+            item.количество,
+            item.цена,
+            item.количество * item.цена
+        ])
+    
+    # Итог
+    ws.append(["", "", "Итого:", order.общая_стоимость])
+    ws[f'D{ws.max_row}'].font = bold_font
+    
+    # Выравнивание
+    for row in ws.iter_rows(min_row=1, max_col=4, max_row=ws.max_row):
+        for cell in row:
+            cell.alignment = Alignment(horizontal='center')
+    
+    # Сохраняем в BytesIO
+    buffer = BytesIO()
+    wb.save(buffer)
+    buffer.seek(0)
+    return buffer
+
+def send_receipt_email(order, excel_file):
+    """Отправка чека по электронной почте"""
+    subject = f"Чек заказа #{order.id}"
+    message = (
+        f"Спасибо за ваш заказ!\n\n"
+        f"Номер заказа: #{order.id}\n"
+        f"Дата заказа: {order.дата_создания.strftime('%d.%m.%Y %H:%M')}\n"
+        f"Общая стоимость: {order.общая_стоимость} ₽\n\n"
+        f"Адрес доставки: {order.адрес_доставки}\n"
+    )
+    
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        [order.email],
+        fail_silently=False,
+        html_message=message.replace('\n', '<br>'),
+        attachments=[
+            (f"чек_заказа_{order.id}.xlsx", excel_file.getvalue(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        ]
+    )

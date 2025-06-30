@@ -14,66 +14,78 @@
             {% if cart.cartitem_set.all %}
                 <div class="cart-items">
                     {% for item in cart.cartitem_set.all %}
-<div class="card mb-3 shadow-sm">
-    <div class="row g-0">
-        <div class="col-md-3">
-            {% if item.товар.фото_товара %}
-                <img src="{{ item.товар.фото_товара.url }}" class="img-fluid rounded-start h-100" 
-                     style="object-fit: cover;" alt="{{ item.товар.название }}">
-            {% else %}
-                <div class="bg-light h-100 d-flex align-items-center justify-content-center rounded-start">
-                    <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
-                </div>
-            {% endif %}
-        </div>
-        <div class="col-md-9">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-8">
-                        <h5 class="card-title">{{ item.товар.название }}</h5>
-                        <p class="text-muted small mb-1">
-                            <i class="fas fa-tag me-1"></i>{{ item.товар.категория.название }}
-                        </p>
-                        <p class="text-muted small mb-2">
-                            <i class="fas fa-industry me-1"></i>{{ item.товар.производитель.название }}
-                        </p>
-                        <p class="text-primary fw-bold mb-0">{{ item.товар.цена }} ₽ за шт.</p>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <div class="mb-3">
-                            <!-- Исправленная строка: добавлен item.id в URL -->
-                            <form method="post" action="{% url 'update_cart_item' item.id %}" class="d-inline-block">
-                                {% csrf_token %}
-                                <div class="input-group" style="max-width: 120px;">
-                                    <input type="number" class="form-control form-control-sm" 
-                                           name="quantity" value="{{ item.количество }}" 
-                                           min="1" max="{{ item.товар.количество_на_складе }}">
-                                    <button type="submit" class="btn btn-outline-primary btn-sm">
-                                        <i class="fas fa-sync-alt"></i>
-                                    </button>
+                        <div class="card mb-3 shadow-sm">
+                            <div class="row g-0">
+                                <div class="col-md-3">
+                                    {% if item.товар.фото_товара %}
+                                        <img src="{{ item.товар.фото_товара.url }}" class="img-fluid rounded-start h-100" 
+                                             style="object-fit: cover;" alt="{{ item.товар.название }}">
+                                    {% else %}
+                                        <div class="bg-light h-100 d-flex align-items-center justify-content-center rounded-start">
+                                            <i class="fas fa-image text-muted" style="font-size: 2rem;"></i>
+                                        </div>
+                                    {% endif %}
                                 </div>
-                            </form>
+                                <div class="col-md-9">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <h5 class="card-title">{{ item.товар.название }}</h5>
+                                                <p class="text-muted small mb-1">
+                                                    <i class="fas fa-tag me-1"></i>{{ item.товар.категория.название }}
+                                                </p>
+                                                <p class="text-muted small mb-2">
+                                                    <i class="fas fa-industry me-1"></i>{{ item.товар.производитель.название }}
+                                                </p>
+                                                <p class="text-primary fw-bold mb-0">{{ item.товар.цена }} ₽ за шт.</p>
+                                            </div>
+                                            <div class="col-md-4 text-end">
+                                                <div class="mb-3">
+                                                    <form method="post" action="{% url 'update_cart_item' item.id %}" class="d-inline-block">
+                                                        {% csrf_token %}
+                                                        <div class="input-group" style="max-width: 120px;">
+                                                            <input type="number" class="form-control form-control-sm" 
+                                                                   name="quantity" value="{{ item.количество }}" 
+                                                                   min="1" max="{{ item.товар.количество_на_складе }}">
+                                                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                                                <i class="fas fa-sync-alt"></i>
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                
+                                                <div class="mb-2">
+                                                    <strong class="text-success">{{ item.стоимость_элемента }} ₽</strong>
+                                                </div>
+                                                
+                                                <form method="post" action="{% url 'remove_from_cart' item.id %}" class="d-inline-block">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm" 
+                                                            onclick="return confirm('Удалить товар из корзины?')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        
-                        <div class="mb-2">
-                            <strong class="text-success">{{ item.стоимость_элемента }} ₽</strong>
-                        </div>
-                        
-                        <!-- Аналогичное исправление для формы удаления -->
-                        <form method="post" action="{% url 'remove_from_cart' item.id %}" class="d-inline-block">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-outline-danger btn-sm" 
-                                    onclick="return confirm('Удалить товар из корзины?')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
-                    </div>
+                    {% endfor %}
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endfor %}
+                
+                <!-- Кнопки действий под списком товаров -->
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <a href="{% url 'product_list' %}" class="btn btn-outline-primary w-100 mb-2">
+                            <i class="fas fa-arrow-left me-1"></i>Продолжить покупки
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <a href="{% url 'checkout' %}" class="btn btn-success w-100 mb-2">
+                            <i class="fas fa-credit-card me-1"></i>Оформить заказ
+                        </a>
+                    </div>
                 </div>
             {% else %}
                 <div class="text-center py-5">
@@ -112,16 +124,14 @@
                             <strong class="text-success">{{ cart.общая_стоимость }} ₽</strong>
                         </div>
                         
-                        <button class="btn btn-success w-100 mb-2" disabled>
+                        <!-- Основная кнопка оформления заказа -->
+                        <a href="{% url 'checkout' %}" class="btn btn-success w-100 mb-2">
                             <i class="fas fa-credit-card me-1"></i>Оформить заказ
-                        </button>
-                        <small class="text-muted d-block text-center">
-                            Функция оформления заказа будет доступна скоро
-                        </small>
+                        </a>
                     </div>
                 </div>
                 
-                <!-- Quick Actions -->
+                <!-- Дополнительные действия -->
                 <div class="mt-3">
                     <a href="{% url 'product_list' %}" class="btn btn-outline-primary w-100 mb-2">
                         <i class="fas fa-arrow-left me-1"></i>Продолжить покупки

@@ -62,6 +62,44 @@ class Product(models.Model):
         self.full_clean()
         super().save(*args, **kwargs)
 
+class Order(models.Model):
+    """Модель заказа"""
+    пользователь = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    дата_создания = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    общая_стоимость = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Общая стоимость")
+    адрес_доставки = models.TextField(verbose_name="Адрес доставки")
+    email = models.EmailField(verbose_name="Email")
+    телефон = models.CharField(max_length=20, verbose_name="Телефон")
+    
+    class Meta:
+        verbose_name = "Заказ"
+        verbose_name_plural = "Заказы"
+        ordering = ['-дата_создания']
+        
+    def __str__(self):
+        return f"Заказ #{self.id} от {self.дата_создания.strftime('%d.%m.%Y')}"
+    
+    def items_count(self):
+        return self.orderitem_set.count()
+    items_count.short_description = "Количество товаров"
+
+class OrderItem(models.Model):
+    """Модель элемента заказа"""
+    заказ = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="Заказ")
+    товар = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Товар")
+    количество = models.PositiveIntegerField(verbose_name="Количество")
+    цена = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
+    
+    class Meta:
+        verbose_name = "Элемент заказа"
+        verbose_name_plural = "Элементы заказа"
+        
+    def __str__(self):
+        return f"{self.товар.название} ({self.количество} шт.)"
+    
+    def сумма(self):
+        return self.количество * self.цена
+    сумма.short_description = "Сумма"
 
 class Cart(models.Model):
     """Модель корзины"""

@@ -12,5 +12,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('spec/', views.spec_list, name='spec_list'),
     path('spec/<int:pk>/', views.spec_detail, name='spec_detail'),
+    path('checkout/', views.checkout, name='checkout'),
     
 ]
