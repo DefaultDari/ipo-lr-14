@@ -61,7 +61,8 @@
             
             {% if user.is_authenticated %}
                 {% if product.количество_на_складе > 0 %}
-                    <form method="post" action="{% url 'add_to_cart' %}" class="add-to-cart-form">
+                    <form method="post" action="{% url 'add_to_cart' product.id %}" class="add-to-cart-form">
+
                         {% csrf_token %}
                         <input type="hidden" name="product_id" value="{{ product.id }}">
                         

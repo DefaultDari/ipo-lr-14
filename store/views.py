@@ -8,9 +8,10 @@ from django.views.decorators.http import require_POST
 from django.db.models import Q
 from .models import Product, Category, Manufacturer, Cart, CartItem
 import json
-from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 from pathlib import Path
+
+
 
 def load_specialties():
     # Load specialties from dump.json
@@ -94,7 +95,6 @@ def product_list(request):
 
 
 def product_detail(request, product_id):
-    """Детальная страница товара"""
     product = get_object_or_404(Product, id=product_id)
     related_products = Product.objects.filter(
         категория=product.категория,
@@ -107,85 +107,137 @@ def product_detail(request, product_id):
     })
 
 
+
 @login_required
 def cart_view(request):
     """Просмотр корзины"""
     cart, created = Cart.objects.get_or_create(пользователь=request.user)
     return render(request, 'store/cart.html', {'cart': cart})
 
-
+# Обновленные функции для работы с корзиной
 @login_required
 @require_POST
-def add_to_cart(request):
+def add_to_cart(request, product_id):
     """Добавление товара в корзину"""
-    product_id = request.POST.get('product_id')
-    quantity = int(request.POST.get('quantity', 1))
-    
-    product = get_object_or_404(Product, id=product_id)
-    cart, created = Cart.objects.get_or_create(пользователь=request.user)
-    
-    # Проверка наличия товара на складе
-    if quantity > product.количество_на_складе:
-        messages.error(request, f'Недостаточно товара на складе. Доступно: {product.количество_на_складе} шт.')
-        return redirect('product_detail', product_id=product_id)
-    
-    cart_item, created = CartItem.objects.get_or_create(
-        корзина=cart,
-        товар=product,
-        defaults={'количество': quantity}
-    )
-    
-    if not created:
-        # Проверка общего количества
-        total_quantity = cart_item.количество + quantity
-        if total_quantity > product.количество_на_складе:
-            messages.error(request, f'Недостаточно товара на складе. Доступно: {product.количество_на_складе} шт.')
-            return redirect('product_detail', product_id=product_id)
+    try:
+        # Получаем товар и запрошенное количество
+        product = get_object_or_404(Product, id=product_id)
+        quantity = int(request.POST.get('quantity', 1))
         
-        cart_item.количество = total_quantity
-        cart_item.save()
-        messages.success(request, f'Количество товара "{product.название}" обновлено в корзине.')
-    else:
-        messages.success(request, f'Товар "{product.название}" добавлен в корзину.')
-    
-    return redirect('cart')
-
+        # Проверяем доступное количество
+        if quantity <= 0:
+            messages.error(request, 'Некорректное количество')
+            return redirect('product_detail', pk=product_id)
+            
+        if quantity > product.количество_на_складе:
+            messages.error(
+                request, 
+                f'Недостаточно товара на складе. Доступно: {product.количество_на_складе} шт.'
+            )
+            return redirect('product_detail', pk=product_id)
+        
+        # Получаем или создаем корзину пользователя
+        cart, created = Cart.objects.get_or_create(пользователь=request.user)
+        
+        # Ищем существующий элемент корзины для этого товара
+        cart_item, item_created = CartItem.objects.get_or_create(
+            корзина=cart,
+            товар=product,
+            defaults={'количество': quantity}
+        )
+        
+        # Если элемент уже существует, обновляем количество
+        if not item_created:
+            new_quantity = cart_item.количество + quantity
+            if new_quantity > product.количество_на_складе:
+                messages.error(
+                    request, 
+                    f'Превышено доступное количество. Доступно: {product.количество_на_складе} шт.'
+                )
+                return redirect('cart')
+                
+            cart_item.количество = new_quantity
+            cart_item.save()
+            messages.success(
+                request, 
+                f'Количество товара "{product.название}" обновлено в корзине'
+            )
+        else:
+            messages.success(
+                request, 
+                f'Товар "{product.название}" добавлен в корзину'
+            )
+            
+        return redirect('cart')
+        
+    except Exception as e:
+        messages.error(request, f'Ошибка при добавлении в корзину: {str(e)}')
+        return redirect('product_detail', pk=product_id)
 
 @login_required
 @require_POST
-def update_cart_item(request):
+def update_cart_item(request, item_id):
     """Обновление количества товара в корзине"""
-    item_id = request.POST.get('item_id')
-    quantity = int(request.POST.get('quantity', 1))
-    
-    cart_item = get_object_or_404(CartItem, id=item_id, корзина__пользователь=request.user)
-    
-    if quantity <= 0:
-        cart_item.delete()
-        messages.success(request, 'Товар удален из корзины.')
-    elif quantity > cart_item.товар.количество_на_складе:
-        messages.error(request, f'Недостаточно товара на складе. Доступно: {cart_item.товар.количество_на_складе} шт.')
-    else:
+    try:
+        # Получаем элемент корзины текущего пользователя
+        cart_item = get_object_or_404(
+            CartItem, 
+            id=item_id, 
+            корзина__пользователь=request.user
+        )
+        
+        quantity = int(request.POST.get('quantity', 1))
+        
+        # Проверяем корректность количества
+        if quantity <= 0:
+            cart_item.delete()
+            messages.success(request, 'Товар удален из корзины')
+            return redirect('cart')
+            
+        # Проверяем доступное количество
+        if quantity > cart_item.товар.количество_на_складе:
+            messages.error(
+                request, 
+                f'Недостаточно товара на складе. Доступно: {cart_item.товар.количество_на_складе} шт.'
+            )
+            return redirect('cart')
+        
+        # Обновляем количество
         cart_item.количество = quantity
         cart_item.save()
-        messages.success(request, 'Количество товара обновлено.')
-    
-    return redirect('cart')
-
+        messages.success(request, 'Количество товара обновлено')
+        
+        return redirect('cart')
+        
+    except Exception as e:
+        messages.error(request, f'Ошибка при обновлении корзины: {str(e)}')
+        return redirect('cart')
 
 @login_required
 @require_POST
-def remove_from_cart(request):
+def remove_from_cart(request, item_id):
     """Удаление товара из корзины"""
-    item_id = request.POST.get('item_id')
-    cart_item = get_object_or_404(CartItem, id=item_id, корзина__пользователь=request.user)
-    
-    product_name = cart_item.товар.название
-    cart_item.delete()
-    messages.success(request, f'Товар "{product_name}" удален из корзины.')
-    
-    return redirect('cart')
-
+    try:
+        # Получаем элемент корзины текущего пользователя
+        cart_item = get_object_or_404(
+            CartItem, 
+            id=item_id, 
+            корзина__пользователь=request.user
+        )
+        
+        product_name = cart_item.товар.название
+        cart_item.delete()
+        
+        messages.success(
+            request, 
+            f'Товар "{product_name}" удален из корзины'
+        )
+        
+        return redirect('cart')
+        
+    except Exception as e:
+        messages.error(request, f'Ошибка при удалении товара: {str(e)}')
+        return redirect('cart')
 
 def register(request):
     """Регистрация пользователя"""
