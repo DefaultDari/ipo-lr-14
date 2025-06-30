@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Список квалификаций</h1>
+    
+    <div class="list-group">
+        {% for spec in specialties %}
+        <a href="{% url 'spec_detail' spec.pk %}" class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ spec.fields.title }}</h5>
+                <small>Код: {{ spec.fields.code }}</small>
+            </div>
+            <p class="mb-1">Тип: {{ spec.fields.c_type }}</p>
+        </a>
+        {% empty %}
+        <div class="alert alert-info">Нет доступных квалификаций</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

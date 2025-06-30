@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h2>{{ spec.fields.title }}</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Основная информация</h5>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <strong>Код:</strong> {{ spec.fields.code }}
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Тип:</strong> {{ spec.fields.c_type }}
+                        </li>
+                        {% if spec.fields.group %}
+                        <li class="list-group-item">
+                            <strong>Группа:</strong> {{ spec.fields.group }}
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+                {% if spec.fields.desc %}
+                <div class="col-md-6">
+                    <h5>Описание</h5>
+                    <p>{{ spec.fields.desc }}</p>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if spec.fields.icon %}
+            <div class="mt-4">
+                <img src="{{ spec.fields.icon.url }}" alt="{{ spec.fields.title }}" class="img-fluid">
+            </div>
+            {% endif %}
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'spec_list' %}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Назад к списку
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
