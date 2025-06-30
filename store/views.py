@@ -22,8 +22,52 @@ from django.contrib.auth.decorators import login_required
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from .models import Cart, Order, OrderItem
+from rest_framework import viewsets, permissions
+from .models import Category, Manufacturer, Product, Cart, CartItem
+from .serializers import (
+    CategorySerializer,
+    ManufacturerSerializer,
+    ProductSerializer,
+    CartSerializer,
+    CartItemSerializer
+)
 
 
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class ManufacturerViewSet(viewsets.ModelViewSet):
+    queryset = Manufacturer.objects.all()
+    serializer_class = ManufacturerSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+class ProductViewSet(viewsets.ModelViewSet):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def perform_create(self, serializer):
+        # Автоматическое назначение создателя товара
+        serializer.save(создатель=self.request.user)
+
+class CartViewSet(viewsets.ModelViewSet):
+    queryset = Cart.objects.all()  # Add this line
+    serializer_class = CartSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        # Пользователь видит только свою корзину
+        return Cart.objects.filter(пользователь=self.request.user)
+
+class CartItemViewSet(viewsets.ModelViewSet):
+    serializer_class = CartItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        # Пользователь видит только свои элементы корзины
+        return CartItem.objects.filter(корзина__пользователь=self.request.user)
 def load_specialties():
     # Load specialties from dump.json
     BASE_DIR = Path(__file__).resolve().parent.parent
